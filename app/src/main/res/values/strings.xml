@@ -5,4 +5,7 @@
     <string name="x">X:</string>
     <string name="y">Y:</string>
     <string name="z">Z:</string>
+    <string name="iniciar">Iniciar</string>
+    <string name="parar">Parar</string>
+    <string name="compartilhar">Compartilhar</string>
 </resources>
