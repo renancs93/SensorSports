@@ -64,20 +64,47 @@
             </TableRow>
 
             <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="Z"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                />
+            <TextView
+                android:id="@+id/res_axiosZ"
+                android:layout_weight="5"
+                android:textSize="15sp"
+                />
+
+        </TableRow>
+
+            <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TextView
-                    android:text="Z"
+                <Button
+                    android:id="@+id/btnStart"
                     android:layout_weight="1"
-                    android:textAlignment="center"
                     android:textSize="15sp"
-                    />
-                <TextView
-                    android:id="@+id/res_axiosZ"
-                    android:layout_weight="5"
+                    android:text="START"
+                    ></Button>
+
+                <Button
+                    android:id="@+id/btnStop"
+                    android:layout_weight="1"
                     android:textSize="15sp"
-                    />
+                    android:text="STOP"
+                    ></Button>
+
+                <Button
+                    android:id="@+id/btnShare"
+                    android:layout_weight="1"
+                    android:textSize="15sp"
+                    android:text="SHARE"
+                    ></Button>
 
             </TableRow>
 
