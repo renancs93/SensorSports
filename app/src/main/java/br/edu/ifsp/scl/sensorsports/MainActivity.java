@@ -8,19 +8,31 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
-import java.util.List;
+import java.util.Locale;
+
+import static android.hardware.Sensor.TYPE_ACCELEROMETER;
+import static android.hardware.Sensor.TYPE_GYROSCOPE;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
+    final short POLL_FREQUENCY = 200; //in milliseconds
+    private long lastUpdate = -1;
+
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private Sensor gyroscope;
 
-    private float axiosX = 0, axiosY = 0, axiosZ = 0;
+    TextView accX;
+    TextView accY;
+    TextView accZ;
+    TextView gyroX;
+    TextView gyroY;
+    TextView gyroZ;
 
-    TextView tX, tY, tZ;
+    float[] accelerometerMatrix = new float[3];
+    float[] gyroscopeMatrix = new float[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +40,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        //sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        accelerometer = sensorManager.getDefaultSensor(TYPE_ACCELEROMETER);
+        gyroscope = sensorManager.getDefaultSensor(TYPE_GYROSCOPE);
 
         //Componentes da Interface
-        tX = (TextView) findViewById(R.id.res_axiosX);
-        tY = (TextView) findViewById(R.id.res_axiosY);
-        tZ = (TextView) findViewById(R.id.res_axiosZ);
+        accX = findViewById(R.id.valueAccX);
+        accY = findViewById(R.id.valueAccY);
+        accZ = findViewById(R.id.valueAccZ);
+        gyroX = findViewById(R.id.valueGyroX);
+        gyroY = findViewById(R.id.valueGyroY);
+        gyroZ = findViewById(R.id.valueGyroZ);
 
         //listSensors();
     }
@@ -43,33 +57,41 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
     protected void onPause() {
-        sensorManager.unregisterListener(this);
         super.onPause();
-    }
-
-    private void listSensors() {
-        List<Sensor> deviceSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
-        for(Sensor s: deviceSensors){
-            Log.d("Sensors: ", s.getName());
-        }
+        sensorManager.unregisterListener(this);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        axiosX = event.values[0];
-        axiosY = event.values[1];
-        axiosZ = event.values[2];
+        Sensor sensor = event.sensor;
 
-        tX.setText( String.valueOf(axiosX));
-        tY.setText( String.valueOf(axiosY));
-        tZ.setText( String.valueOf(axiosZ));
+        int i = sensor.getType();
+        if (i == TYPE_ACCELEROMETER) {
+            accelerometerMatrix = event.values;
+        } else if (i == TYPE_GYROSCOPE) {
+            gyroscopeMatrix = event.values;
+        }
 
-//        Log.d("Result", "Eixos: "+axiosX +"(X) - "+axiosY +"(Y) - "+axiosZ +"(Z)");
+        long curTime = System.currentTimeMillis();
+        long diffTime = (curTime - lastUpdate);
+
+        // only allow one update every POLL_FREQUENCY.
+        if (diffTime > POLL_FREQUENCY) {
+            lastUpdate = curTime;
+
+            accX.setText(String.format(Locale.getDefault(),"%.2f", accelerometerMatrix[0]));
+            accY.setText(String.format(Locale.getDefault(),"%.2f", accelerometerMatrix[1]));
+            accZ.setText(String.format(Locale.getDefault(),"%.2f", accelerometerMatrix[2]));
+            gyroX.setText(String.format(Locale.getDefault(),"%.2f", gyroscopeMatrix[0]));
+            gyroY.setText(String.format(Locale.getDefault(),"%.2f", gyroscopeMatrix[1]));
+            gyroZ.setText(String.format(Locale.getDefault(),"%.2f", gyroscopeMatrix[2]));
+        }
     }
 
     @Override

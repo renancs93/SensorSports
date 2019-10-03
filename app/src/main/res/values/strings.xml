@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Sensor Sports</string>
+    <string name="acelerometro">Acelerômetro</string>
+    <string name="giroscopio">Giroscópio</string>
+    <string name="x">X:</string>
+    <string name="y">Y:</string>
+    <string name="z">Z:</string>
 </resources>
