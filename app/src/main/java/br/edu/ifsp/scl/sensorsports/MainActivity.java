@@ -10,22 +10,24 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import static android.hardware.Sensor.TYPE_ACCELEROMETER;
 import static android.hardware.Sensor.TYPE_GYROSCOPE;
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void onClick(View v) {
-        if (v == btnStart) {
+        if (v == btnStart && !started) {
             started = true;
             eraseFile();
             startSensors();
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             started = false;
             stopSensors();
         } else if (v == btnShare) {
+            stopSensors();
             shareData();
         }
     }
@@ -166,9 +169,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             log = new FileOutputStream(file.toString() + "/DadosSensor.txt", true);
             Log.d("Sensors", "nome:" + file.getPath());
             dlog = new OutputStreamWriter(log);
-
-            String s = "\n" + accelerometerMatrix[0] + ";" + accelerometerMatrix[0] + ";" + accelerometerMatrix[0] + ";";
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss:SSS", Locale.getDefault());
+            String s = "\n" + accelerometerMatrix[0] + ";" + accelerometerMatrix[1] + ";" + accelerometerMatrix[2] + ";";
             s = s + gyroscopeMatrix[0] + ";" + gyroscopeMatrix[1] + ";" + gyroscopeMatrix[2] + ";";
+
+            s = s + df.format(new Date()) + ";";
             dlog.append(s);
             dlog.flush();
         } catch (FileNotFoundException e) {
