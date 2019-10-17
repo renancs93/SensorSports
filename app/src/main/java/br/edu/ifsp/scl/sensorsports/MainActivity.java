@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float[] gyroscopeMatrix = new float[3];
 
     FirebaseDatabase database;
-    DatabaseReference myRef;
+    DatabaseReference status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +97,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             btnShare.setOnClickListener(this);
             btnStop.setEnabled(false);
             database = FirebaseDatabase.getInstance();
-            myRef = database.getReference("status");
-            myRef.addValueEventListener(new ValueEventListener() {
+            status = database.getReference("status");
+            status.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if ("started".equals(dataSnapshot.getValue())) {
@@ -145,9 +145,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void onClick(View v) {
         if (v == btnStart && !started) {
-            myRef.setValue("started");
+            status.setValue("started");
         } else if (v == btnStop) {
-            myRef.setValue("stopped");
+            status.setValue("stopped");
         } else if (v == btnShare) {
             shareData();
         }
@@ -258,5 +258,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        status.setValue("stopped");
     }
 }
