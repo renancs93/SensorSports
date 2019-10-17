@@ -15,9 +15,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -62,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float[] accelerometerMatrix = new float[3];
     float[] gyroscopeMatrix = new float[3];
 
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,9 +95,44 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             btnStart.setOnClickListener(this);
             btnStop.setOnClickListener(this);
             btnShare.setOnClickListener(this);
+            btnStop.setEnabled(false);
+            database = FirebaseDatabase.getInstance();
+            myRef = database.getReference("status");
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if ("started".equals(dataSnapshot.getValue())) {
+                        start();
+                    } else {
+                        stop();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         } else {
             System.exit(0);
         }
+    }
+
+    private void stop() {
+        btnShare.setEnabled(true);
+        btnStart.setEnabled(true);
+        btnStop.setEnabled(false);
+        stopSensors();
+        started = false;
+    }
+
+    private void start() {
+        btnShare.setEnabled(false);
+        btnStart.setEnabled(false);
+        btnStop.setEnabled(true);
+        eraseFile();
+        startSensors();
+        started = true;
     }
 
     private boolean checkPermissions() {
@@ -100,14 +145,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void onClick(View v) {
         if (v == btnStart && !started) {
-            started = true;
-            eraseFile();
-            startSensors();
+            myRef.setValue("started");
         } else if (v == btnStop) {
-            started = false;
-            stopSensors();
+            myRef.setValue("stopped");
         } else if (v == btnShare) {
-            stopSensors();
             shareData();
         }
     }

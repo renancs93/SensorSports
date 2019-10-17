@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "591699429553",
+    "firebase_url": "https://sensorsports-8a123.firebaseio.com",
+    "project_id": "sensorsports-8a123",
+    "storage_bucket": "sensorsports-8a123.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591699429553:android:67dde0179160bc5117fa90",
+        "android_client_info": {
+          "package_name": "br.edu.ifsp.scl.sensorsports"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591699429553-6a2ifnf40dh94omcmssr42virjqqfvjg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPaunS4n9-9i2gGl1FDWX1p9ND2xL1GCk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591699429553-6a2ifnf40dh94omcmssr42virjqqfvjg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
