@@ -31,6 +31,7 @@ import java.util.Locale;
 
 import static android.hardware.Sensor.TYPE_ACCELEROMETER;
 import static android.hardware.Sensor.TYPE_GYROSCOPE;
+import static androidx.core.content.FileProvider.getUriForFile;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, View.OnClickListener {
 
@@ -143,9 +144,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         File file = new File(getApplicationContext().getFilesDir() + "/DadosSensor.txt");
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/*");
-        Uri uri = Uri.parse("content://" + file.getAbsolutePath());
-        sharingIntent.putExtra(Intent.EXTRA_STREAM, uri);
-        if (uri != null) {
+        Uri contentUri = getUriForFile(this, "br.edu.ifsp.scl.sensorsports.fileprovider", file);
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+        if (contentUri != null) {
             // Grant temporary read permission to the content URI
             sharingIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
